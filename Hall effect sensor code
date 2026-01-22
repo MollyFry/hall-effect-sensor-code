@@ -1,0 +1,41 @@
+//hall effect sensor code for LPT
+
+#include <Arduino.h>
+#include <elapsedMillis.h>
+
+//Pin for connecting hall effect signal
+const int HALL_EFFECT_PIN = 2; //change pin based on hall effect output
+//variables
+float rpm = 0.0; //creates float variable for rpm
+elapsedMillis sampleTimer; //creates timer
+float mph = 0.0; //creates float variable for mph
+const float tire_diameter = 24.0; //tire diameter in inches, change as needed
+const float gear_ratio = 4.0; //gear ratio, change as needed
+
+
+void setupHallEffect() {
+    //setup code for hall effect sensor
+    pinMode(HALL_EFFECT_PIN, INPUT); //sets hall effect pin as input
+    attachInterrupt(HALL_EFFECT_PIN, hallEffectISR, RISING); //attaches interrupt to hallEffectPin on RISING edge
+    Serial.begin(115200); //starts serial communication at 115200 baud rate, change if need be
+}
+void hallEffectISR() {
+    //Interrupt Service Routine for hall effect signal
+    calculateMPH(); //call function to calculate MPH
+}
+
+void calculateMPH() {
+    //code to calculate MPH based on pulses counted in a time frame
+    static int pulseCount = 0; //static variable to hold pulse count
+
+    pulseCount++; //increment pulse count
+
+    if (sampleTimer >= 1000) { //if one second has passed
+        rpm = (pulseCount * 60); //calculate RPM (pulses per second * 60)
+        mph = (rpm * tire_diameter) / (gear_ratio * 336); //convert RPM to MPH (assuming wheel circumference in inches)
+        pulseCount = 0; //reset pulse count
+        sampleTimer = 0; //reset timer
+        Serial.print("MPH: ");
+        Serial.println(mph); //print MPH to serial monitor
+    }
+}
