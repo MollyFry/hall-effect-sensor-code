@@ -4,13 +4,13 @@
 #include <elapsedMillis.h>
 
 //Pin for connecting hall effect signal
-const int HALL_EFFECT_PIN = 2; //change pin based on hall effect output
+const int HALL_EFFECT_PIN = 2; //change pin based on hall effect output. STILL NEEDED. DO NOT LET ME FORGET A LOT OF THESE ARE STILL NEEDED.
 //variables
 float rpm = 0.0; //creates float variable for rpm
 elapsedMillis sampleTimer; //creates timer
 float mph = 0.0; //creates float variable for mph
-const float tire_diameter = 24.0; //tire diameter in inches, change as needed
-const float gear_ratio = 4.0; //gear ratio, change as needed
+const float tire_diameter = 24.0; //tire diameter in inches, change as needed. MEASUREMENTS STILL NEEDED.
+const float gear_ratio = 4.0; //gear ratio, change as needed. MEASUREMENTS STILL NEEDED
 
 
 void setupHallEffect() {
@@ -35,7 +35,9 @@ void calculateMPH() {
         mph = (rpm * tire_diameter) / (gear_ratio * 336); //convert RPM to MPH (assuming wheel circumference in inches)
         pulseCount = 0; //reset pulse count
         sampleTimer = 0; //reset timer
-        Serial.print("MPH: ");
-        Serial.println(mph); //print MPH to serial monitor
+        //Serial.print("MPH: ");
+        //Serial.println(mph); //print MPH to serial monitor
+        writeToBottom(mph); //building off functions LPT made for displaying the random numbers on the LCD displays, will need to be integrated in with that code
+        writeToTop(rpm); //these might need to go in a different funciton, play around with as needed
     }
 }
